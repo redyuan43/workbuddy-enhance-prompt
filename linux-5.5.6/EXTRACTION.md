@@ -6,8 +6,8 @@
 
 | 输出文件 | JS 变量名 | 字节偏移 | 读取长度 |
 |---|---|---|---|
-| `enhance_system_prompt.linux-5.5.6.md` | `DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` | `124721281` | 3035 B |
-| `enhance_user_prompt.linux-5.5.6.md`   | `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE`   | `124724316` | 2706 B |
+| `enhance_system_prompt.md` | `DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` | `124721281` | 3035 B |
+| `enhance_user_prompt.md`   | `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE`   | `124724316` | 2706 B |
 
 ## 来源环境
 
@@ -51,9 +51,9 @@ tail -c +124724317 app.asar | head -c 2706
 import os
 ASAR = '/opt/WorkBuddy/resources/app.asar'
 JOBS = [
-    ('enhance_system_prompt.linux-5.5.6.md', 124721281, 3035,
+    ('enhance_system_prompt.md', 124721281, 3035,
      'var DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE = `'),
-    ('enhance_user_prompt.linux-5.5.6.md',   124724316, 2706,
+    ('enhance_user_prompt.md',   124724316, 2706,
      'var DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE = `'),
 ]
 TAIL_MARKER = '\n    `;'
