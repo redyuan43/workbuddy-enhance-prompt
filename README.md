@@ -6,14 +6,32 @@
 - 来源模块：`packages/workbuddy-server/src/enhance-prompt/handlers.ts`
 - 提取方式：直接从反编译产物中按模板变量名（`DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` / `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE`）原样切出，未做任何改写。
 
+> **两个平台版本并存**：`enhance_*_prompt.md` 为 macOS 版提取；`enhance_*.linux-5.5.6.md` 为 Linux 版（WorkBuddy 5.5.6-wb.38337834）提取。两者的 **User 模板已分叉**，详见下方"平台版本差异"。
+
 ## 文件说明
 
 | 文件 | 变量名 | 作用 |
 |---|---|---|
-| [enhance_system_prompt.md](enhance_system_prompt.md) | `DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` | System Prompt。定义"Prompt Engineering Expert"角色：分析用户原始输入的目标、歧义与缺口，按 prompt 工程原则改写为更清晰、更完整、带约束与输出格式的增强版本。含硬约束（语言跟随输入、上限约 800 字符、只输出结果不加评论）与 2 个 few-shot 示例。 |
-| [enhance_user_prompt.md](enhance_user_prompt.md) | `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE` | User Prompt 包装器。内含 `{input}` 占位符，运行时被替换为用户选中的输入文本；强调"语言一致性"为最高优先级（中文进中文出），附中/英/混合语言 few-shot。 |
+| [enhance_system_prompt.md](enhance_system_prompt.md) | `DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` | System Prompt（macOS 版）。定义"Prompt Engineering Expert"角色：分析用户原始输入的目标、歧义与缺口，按 prompt 工程原则改写为更清晰、更完整、带约束与输出格式的增强版本。含硬约束（语言跟随输入、上限约 800 字符、只输出结果不加评论）与 2 个 few-shot 示例。 |
+| [enhance_user_prompt.md](enhance_user_prompt.md) | `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE` | User Prompt 包装器（macOS 版）。内含 `{input}` 占位符，运行时被替换为用户选中的输入文本；强调"语言一致性"为最高优先级（中文进中文出），附中/英/混合语言 few-shot。 |
+| [enhance_system_prompt.linux-5.5.6.md](enhance_system_prompt.linux-5.5.6.md) | `DEFAULT_ENHANCE_PROMPT_SYSTEM_TEMPLATE` | System Prompt（**Linux 5.5.6 版**）。与 macOS 版逐字一致。 |
+| [enhance_user_prompt.linux-5.5.6.md](enhance_user_prompt.linux-5.5.6.md) | `DEFAULT_ENHANCE_PROMPT_USER_TEMPLATE` | User Prompt 包装器（**Linux 5.5.6 版**）。**与 macOS 版内容不同**——是完整的 prompt 改写指令，而非只讲语言一致性。 |
+| [REPORT.md](REPORT.md) | — | Linux 5.5.6 实测分析报告：完整模板、模型路由逻辑、上下文行为、专家（Expert）机制、自助提取命令。 |
+| [EXTRACTION.linux-5.5.6.md](EXTRACTION.linux-5.5.6.md) | — | 上述 Linux 版文件的提取元数据（构建号、字节偏移、提取方法）。 |
 
 两个模板均为**硬编码的出厂默认值**：对所有用户、所有会话、所有任务类型生效，不注入任何会话历史、项目上下文或用户画像。模板默认下游是"代码助手"（开头即写明 `specializes in writing code`），因此用于非代码场景（如文学创作）时不会获得任务语境层面的增强，仅做通用扩写。
+
+## 平台版本差异
+
+| 对比项 | macOS 版 (`enhance_user_prompt.md`) | Linux 版 (`enhance_user_prompt.linux-5.5.6.md`) |
+|---|---|---|
+| 开头 | `You are a language consistency assistant...` | `You are a prompt enhancement assistant...` |
+| 定位 | 只管语言一致性 | 完整改写指令（任务、语言、输出要求、示例） |
+| 篇幅 | 1248 B | 2654 B |
+| 含改写要求 | 否 | 是（第 3–7 条 ENHANCEMENT REQUIREMENTS） |
+| 含 BAD/GOOD 输出对照 | 否 | 是 |
+
+> **System 模板两平台一致**（Linux 版 2981 字符，去掉 JS 包装后与 macOS 版逐字相同）；**User 模板已明显分叉**——macOS 版仅保留语言一致性约束，Linux 5.5.6 版已升级为完整的改写指令模板。复用时应以 Linux 版为准。
 
 ## 调用链路
 
